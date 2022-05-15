@@ -312,12 +312,12 @@ fetch_connect(struct url *cache_url, struct url *url, int af, int verbose) {
         if (bindaddr != NULL && *bindaddr != '\0' &&
             fetch_bind(sd, res->ai_family, bindaddr) != 0) {
             fetch_info("failed to bind to '%s'", bindaddr);
-            close(sd);
+            shutdown(sd, SHUT_RDWR);
             continue;
         }
         if (connect(sd, res->ai_addr, res->ai_addrlen) == 0)
             break;
-        close(sd);
+        shutdown(sd, SHUT_RDWR);
     }
     freeaddrinfo(res0);
     if (sd == -1) {
@@ -327,7 +327,7 @@ fetch_connect(struct url *cache_url, struct url *url, int af, int verbose) {
 
     if ((conn = fetch_reopen(sd)) == NULL) {
         fetch_syserr();
-        close(sd);
+        shutdown(sd, SHUT_RDWR);
         return (NULL);
     }
     conn->cache_url = fetchCopyURL(cache_url);
@@ -675,13 +675,14 @@ fetch_read(conn_t *conn, char *buf, size_t len) {
 #else
         {
 #endif
-            rlen = read(conn->sd, buf, len);
+            rlen = recv(conn->sd, buf, len, 0);
         }
         if (rlen >= 0)
             break;
 
         if (errno != EINTR || !fetchRestartCalls)
             return (-1);
+        
     }
     return (rlen);
 }
@@ -839,7 +840,7 @@ fetch_close(conn_t *conn) {
     }
 #endif
 
-    ret = close(conn->sd);
+    ret = shutdown(conn->sd, SHUT_RDWR);
     if (conn->cache_url)
         fetchFreeURL(conn->cache_url);
 #if ENABLE_FTP

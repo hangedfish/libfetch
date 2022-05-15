@@ -648,6 +648,8 @@ http_proxy_authorize(conn_t *conn, struct url *purl) {
  */
 static void
 http_cork(conn_t *conn, int val) {
+#if __wasi__
+#else
 #if defined(TCP_CORK)
     setsockopt(conn->sd, IPPROTO_TCP, TCP_CORK, &val, sizeof val);
 #else
@@ -656,6 +658,7 @@ http_cork(conn_t *conn, int val) {
 #endif
     val = !val;
     setsockopt(conn->sd, IPPROTO_TCP, TCP_NODELAY, &val, sizeof val);
+#endif
 #endif
 }
 
