@@ -64,7 +64,11 @@
  */
 
 #include <sys/types.h>
+#if __wasi__
+#include <wasi_socket_ext.h>
+#else
 #include <sys/socket.h>
+#endif
 #include <ctype.h>
 #include <errno.h>
 #include <locale.h>
@@ -841,6 +845,7 @@ http_request(struct url *URL, const char *op, struct url_stat *us,
         if (!url->port)
             url->port = fetch_default_port(url->scheme);
 
+#if ENABLE_FTP
         /* were we redirected to an FTP URL? */
         if (purl == NULL && strcmp(url->scheme, SCHEME_FTP) == 0) {
             if (strcmp(op, "GET") == 0)
@@ -848,6 +853,7 @@ http_request(struct url *URL, const char *op, struct url_stat *us,
             else if (strcmp(op, "HEAD") == 0)
                 return (ftp_request(url, "STAT", NULL, us, purl, flags));
         }
+#endif
 
         /* connect to server or proxy */
         if ((conn = http_connect(url, purl, flags, &cached)) == NULL)

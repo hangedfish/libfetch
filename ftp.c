@@ -58,7 +58,11 @@
  */
 
 #include <sys/types.h>
+#if __wasi__
+#include <wasi_socket_ext.h>
+#else
 #include <sys/socket.h>
+#endif
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <ctype.h>

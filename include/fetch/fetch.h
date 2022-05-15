@@ -131,6 +131,7 @@ int fetchStatHTTP(struct url *, struct url_stat *, const char *);
 int fetchListHTTP(struct url_list *, struct url *, const char *,
                   const char *);
 
+#if ENABLE_FTP
 /* FTP-specific functions */
 fetchIO *fetchXGetFTP(struct url *, struct url_stat *, const char *);
 
@@ -142,6 +143,7 @@ int fetchStatFTP(struct url *, struct url_stat *, const char *);
 
 int fetchListFTP(struct url_list *, struct url *, const char *,
                  const char *);
+#endif
 
 /* Generic functions */
 fetchIO *fetchXGetURL(const char *, struct url_stat *, const char *);

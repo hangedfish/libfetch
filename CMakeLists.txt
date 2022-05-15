@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(libfetch)
 
 option(ENABLE_SSL "enable ssl" OFF)
+option(ELABLE_FTP "enable ftp" OFF)
 
 include_directories(include/fetch)
 
@@ -14,7 +15,6 @@ set(
     common.c
     fetch.c
     file.c
-    ftp.c
     http.c
 )
 
@@ -24,6 +24,14 @@ if (ENABLE_SSL)
 else()
     add_definitions(-DENABLE_SSL=0)
 endif()
+    
+if(ELABLE_FTP)
+    add_definitions(-DENABLE_FTP=1)
+    list(APPEND ${fetch_sources} ftp.c)
+else()
+    add_definitions(-DENABLE_FTP=0)
+endif()
+
 
 
 add_library(

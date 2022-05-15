@@ -33,7 +33,11 @@
 
 #include <poll.h>
 #include <sys/types.h>
+#if __wasi__
+#include <wasi_socket_ext.h>
+#else
 #include <sys/socket.h>
+#endif
 #include <sys/time.h>
 #include <sys/uio.h>
 #include <netinet/in.h>
@@ -202,8 +206,10 @@ fetch_default_port(const char *scheme) {
 
     if ((se = getservbyname(scheme, "tcp")) != NULL)
         return (ntohs(se->s_port));
+#if ENABLE_FTP
     if (strcasecmp(scheme, SCHEME_FTP) == 0)
         return (FTP_DEFAULT_PORT);
+#endif
     if (strcasecmp(scheme, SCHEME_HTTP) == 0)
         return (HTTP_DEFAULT_PORT);
     if (strcasecmp(scheme, SCHEME_HTTPS) == 0)
@@ -216,8 +222,10 @@ fetch_default_port(const char *scheme) {
  */
 int
 fetch_default_proxy_port(const char *scheme) {
+#if ENABLE_FTP
     if (strcasecmp(scheme, SCHEME_FTP) == 0)
         return (FTP_DEFAULT_PROXY_PORT);
+#endif
     if (strcasecmp(scheme, SCHEME_HTTP) == 0)
         return (HTTP_DEFAULT_PROXY_PORT);
     return (0);
@@ -234,7 +242,9 @@ fetch_reopen(int sd) {
     /* allocate and fill connection structure */
     if ((conn = calloc(1, sizeof(*conn))) == NULL)
         return (NULL);
+#if ENABLE_FTP
     conn->ftp_home = NULL;
+#endif
     conn->cache_url = NULL;
     conn->next_buf = NULL;
     conn->next_len = 0;
@@ -832,7 +842,9 @@ fetch_close(conn_t *conn) {
     ret = close(conn->sd);
     if (conn->cache_url)
         fetchFreeURL(conn->cache_url);
+#if ENABLE_FTP
     free(conn->ftp_home);
+#endif
     free(conn->buf);
     free(conn);
     return (ret);

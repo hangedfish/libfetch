@@ -84,7 +84,10 @@ struct fetchconn {
     X509		*ssl_cert;	/* server certificate */
     const SSL_METHOD *ssl_meth;	/* SSL method */
 #endif
+
+#if ENABLE_FTP
     char *ftp_home;
+#endif
     struct url *cache_url;
     int cache_af;
 
@@ -142,7 +145,9 @@ int fetch_no_proxy_match(const char *);
 
 int fetch_urlpath_safe(char);
 
+#if ENABLE_FTP
 #define ftp_seterr(n)     fetch_seterr(ftp_errlist, n)
+#endif
 #define http_seterr(n)     fetch_seterr(http_errlist, n)
 #define netdb_seterr(n)     fetch_seterr(netdb_errlist, n)
 #define url_seterr(n)     fetch_seterr(url_errlist, n)
@@ -162,8 +167,10 @@ fetchIO *fetchIO_unopen(void *, ssize_t (*)(void *, void *, size_t),
 fetchIO *http_request(struct url *, const char *,
                       struct url_stat *, struct url *, const char *);
 
+#if ENABLE_FTP
 fetchIO *ftp_request(struct url *, const char *, const char *,
                      struct url_stat *, struct url *, const char *);
+#endif
 
 /*
  * Check whether a particular flag is set

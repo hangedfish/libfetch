@@ -83,8 +83,10 @@ fetchXGet(struct url *URL, struct url_stat *us, const char *flags) {
     }
     if (strcasecmp(URL->scheme, SCHEME_FILE) == 0)
         return (fetchXGetFile(URL, us, flags));
+#if ENABLE_FTP
     else if (strcasecmp(URL->scheme, SCHEME_FTP) == 0)
         return (fetchXGetFTP(URL, us, flags));
+#endif
     else if (strcasecmp(URL->scheme, SCHEME_HTTP) == 0)
         return (fetchXGetHTTP(URL, us, flags));
 #if ENABLE_SSL
@@ -113,8 +115,10 @@ fetchPut(struct url *URL, const char *flags) {
 
     if (strcasecmp(URL->scheme, SCHEME_FILE) == 0)
         return (fetchPutFile(URL, flags));
+#if ENABLE_FTP
     else if (strcasecmp(URL->scheme, SCHEME_FTP) == 0)
         return (fetchPutFTP(URL, flags));
+#endif
     else if (strcasecmp(URL->scheme, SCHEME_HTTP) == 0)
         return (fetchPutHTTP(URL, flags));
 #if ENABLE_SSL
@@ -138,8 +142,10 @@ fetchStat(struct url *URL, struct url_stat *us, const char *flags) {
     }
     if (strcasecmp(URL->scheme, SCHEME_FILE) == 0)
         return (fetchStatFile(URL, us, flags));
+#if ENABLE_FTP
     else if (strcasecmp(URL->scheme, SCHEME_FTP) == 0)
         return (fetchStatFTP(URL, us, flags));
+#endif
     else if (strcasecmp(URL->scheme, SCHEME_HTTP) == 0)
         return (fetchStatHTTP(URL, us, flags));
 #if ENABLE_SSL
@@ -160,8 +166,10 @@ fetchList(struct url_list *ue, struct url *URL, const char *pattern,
 
     if (strcasecmp(URL->scheme, SCHEME_FILE) == 0)
         return (fetchListFile(ue, URL, pattern, flags));
+#if ENABLE_FTP
     else if (strcasecmp(URL->scheme, SCHEME_FTP) == 0)
         return (fetchListFTP(ue, URL, pattern, flags));
+#endif
     else if (strcasecmp(URL->scheme, SCHEME_HTTP) == 0)
         return (fetchListHTTP(ue, URL, pattern, flags));
 #if ENABLE_SSL
