@@ -32,13 +32,14 @@ else()
     add_definitions(-DENABLE_FTP=0)
 endif()
 
-
-
 add_library(
         fetch
         STATIC
         ${fetch_sources}
-        
 )
 
-set(fetch_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/include" PARENT_SCOPE)
+target_include_directories(
+    fetch
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
